@@ -1,0 +1,7 @@
+# Maintainers must review any changes to these critical paths
+/lib/core/                    @BhairabMahanta
+/SECURITY.md                  @BhairabMahanta
+/pubspec.yaml                 @BhairabMahanta
+/pubspec.lock                 @BhairabMahanta
+/.github/                     @BhairabMahanta
+/ARCHITECTURE.md              @BhairabMahanta

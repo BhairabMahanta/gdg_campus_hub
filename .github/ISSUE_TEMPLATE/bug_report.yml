@@ -1,0 +1,92 @@
+name: Bug Report
+description: Report something broken in the Flutter app or repo
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide enough detail so someone else can reproduce the issue.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - events
+        - auth
+        - profile
+        - core
+        - docs
+        - setup / environment
+        - not sure
+    validations:
+      required: true
+
+  - type: input
+    id: file
+    attributes:
+      label: Related file or folder
+      placeholder: lib/features/events/presentation/widgets/event_card.dart
+    validations:
+      required: false
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Android
+        - iOS
+        - Web
+        - Multiple
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run the app
+        2. Open Events screen
+        3. Tap ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: The app should...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: Instead, the app...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error logs or screenshots
+      description: Paste stack traces, console logs, or screenshots if available.
+      placeholder: Paste error output here...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked for existing issues first
+          required: true
+        - label: I can reproduce this issue consistently
+          required: true
