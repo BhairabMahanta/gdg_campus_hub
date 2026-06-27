@@ -6,7 +6,7 @@ routing, architecture, and collaboration workflow — not just add random featur
 
 ---
 
-## Before You Start
+## Before You Start anything
 
 Before writing any code:
 
