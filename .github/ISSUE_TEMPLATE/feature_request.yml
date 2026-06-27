@@ -1,0 +1,104 @@
+name: Feature Request
+description: Propose a new feature, improvement, or learning task
+title: "[Feature]: "
+labels: ["enhancement", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature.
+        
+        This project is a **Flutter learning repo first** and an app second.
+        Please describe the feature in a way that helps contributors understand:
+        1. what they need to build,
+        2. where it belongs in the folder structure,
+        3. what Flutter skill it teaches.
+
+  - type: dropdown
+    id: feature_area
+    attributes:
+      label: Feature area
+      description: Which feature folder should this belong to?
+      options:
+        - events
+        - auth
+        - profile
+        - core
+        - docs
+        - not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Architecture layer
+      description: Which layer is this mainly about?
+      options:
+        - presentation
+        - domain
+        - data
+        - multiple layers
+        - not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty level
+      options:
+        - good first issue
+        - intermediate
+        - advanced
+    validations:
+      required: true
+
+  - type: input
+    id: files
+    attributes:
+      label: Likely files/folders to edit
+      description: Example lib/features/events/presentation/pages/events_list_page.dart
+      placeholder: lib/features/...
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Explain the user or contributor problem clearly.
+      placeholder: Students cannot filter events by category, so the events list becomes noisy...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed solution
+      description: What should be built?
+      placeholder: Add FilterChips above the events list and connect them to the events controller...
+    validations:
+      required: true
+
+  - type: textarea
+    id: flutter_skill
+    attributes:
+      label: Flutter concepts practiced
+      description: Mention what contributors will learn by working on this.
+      placeholder: Riverpod state management, FilterChip, list filtering, widget composition...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Clear checklist for when this issue is complete.
+      placeholder: |
+        - Filter chips are visible above the list
+        - Tapping a chip filters events
+        - "All" restores the full list
+        - flutter analyze passes
+    validations:
+      required: true

@@ -1,0 +1,43 @@
+name: Documentation Improvement
+description: Suggest improvements to README, architecture, setup, or contribution docs
+title: "[Docs]: "
+labels: ["docs", "good first issue"]
+body:
+  - type: dropdown
+    id: doc_area
+    attributes:
+      label: Which document needs work?
+      options:
+        - README.md
+        - ARCHITECTURE.md
+        - CONTRIBUTING.md
+        - SECURITY.md
+        - code comments
+        - setup instructions
+        - not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: unclear
+    attributes:
+      label: What is unclear or missing?
+      placeholder: The explanation of presentation/domain/data is too short for first-time contributors...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Suggested improvement
+      placeholder: Add an example flow from page → controller → use case → repository...
+    validations:
+      required: true
+
+  - type: textarea
+    id: contributor_value
+    attributes:
+      label: Why will this help contributors?
+      placeholder: New contributors will understand where to place code and avoid editing the wrong layer...
+    validations:
+      required: true
