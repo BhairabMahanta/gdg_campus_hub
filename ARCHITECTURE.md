@@ -1,16 +1,21 @@
 # Architecture Guide — GDG Campus Hub
 
-Read this before touching any code. This is not just a folder map — it's the reasoning behind every decision, written so you build the *instinct*, not just the memorization.
+This document explains every folder in the project, why it exists, what goes inside it,
+and how everything connects. Read this before touching any code.
 
 ---
 
-## The Big Picture — Read This First
+## The Big Picture
 
-When I started building Flutter apps, I dumped everything into one file. Widget, API call, business logic, all tangled together. It worked, until the app grew past 200 lines and every change felt like defusing a bomb — touch one thing, three other things silently break.
+This project uses **Feature-First Clean Architecture**. Before explaining folders, here is
+the core idea in one paragraph:
 
-Clean Architecture exists to solve exactly that problem. It separates your code into three layers, each with one job, and a strict rule about what can talk to what. Once this clicks, you will never want to write a Flutter app any other way again.
-
-**Feature-first** means each major area of the app (events, auth, profile) gets its own self-contained mini-version of these three layers. This means two people can work on two different features at the same time without ever touching the same file.
+Most Flutter apps start by dumping everything into one or two files — widgets, API calls,
+business logic, all tangled together. Clean architecture separates those concerns into
+**three distinct layers** so that changing one thing (e.g. switching from mock data to a
+real API) does not break everything else. Feature-first means each major area of the app
+(events, auth, profile) gets its own self-contained mini-version of those three layers,
+so contributors can work on one feature without understanding the whole codebase.
 
 ---
 
@@ -18,237 +23,343 @@ Clean Architecture exists to solve exactly that problem. It separates your code 
 
 ```
 campus_hub/
-  android/                  Auto-generated. Don't touch unless doing native Android work.
-  ios/                      Auto-generated. Don't touch unless doing native iOS work.
-  web/                      Auto-generated. Flutter web support files.
-  test/                     Unit and widget tests go here. Currently empty.
-  pubspec.yaml              Project manifest: dependencies, assets, fonts. MAINTAINER ONLY.
-  pubspec.lock              Auto-generated lock file. Never edit manually.
-
-  .github/                  GitHub-specific config. MAINTAINER ONLY.
-    CODEOWNERS              Defines who must review changes to critical files.
-    pull_request_template.md
-    ISSUE_TEMPLATE/
-
-  README.md                 Project overview and getting started guide.
-  ARCHITECTURE.md           This file.
-  CONTRIBUTING.md           How to contribute, branch rules, PR checklist.
-  SECURITY.md               Security guidelines for contributors.
-
-  lib/                      All Dart/Flutter source code lives here.
-    main.dart               Entry point. Sets up ProviderScope. Nothing else.
-    app.dart                MaterialApp.router: wires theme, router, Riverpod.
-
-    core/                   Shared infrastructure. Used by ALL features.
-      routing/app_router.dart
-      theme/app_theme.dart
-      theme/theme_controller.dart
-      di/service_locator.dart
-      error/failures.dart
-      utils/constants.dart
-
-    features/
-      events/               PRIMARY feature. Start here as a contributor.
-        presentation/pages/events_list_page.dart
-        presentation/pages/event_detail_page.dart
-        presentation/widgets/event_card.dart
-        presentation/controllers/events_controller.dart
-        domain/entities/event.dart
-        domain/usecases/get_events.dart
-        domain/usecases/search_events.dart
-        domain/repositories/events_repository.dart
-        data/datasources/events_local_datasource.dart
-        data/datasources/events_remote_datasource.dart
-        data/models/event_model.dart
-        data/repositories/events_repository_impl.dart
-
-      auth/                 Stubs only — this is where advanced contributors go deep
-        presentation/pages/login_page.dart
-        domain/entities/user.dart
-        domain/repositories/auth_repository.dart
-        data/datasources/auth_local_datasource.dart
-        data/repositories/auth_repository_impl.dart
-
-      profile/              Stubs only for now.
-        presentation/pages/profile_page.dart
+├── android/                  ← Auto-generated. Don't touch unless doing native Android work.
+├── ios/                      ← Auto-generated. Don't touch unless doing native iOS work.
+├── web/                      ← Auto-generated. Flutter web support files.
+├── test/                     ← Unit and widget tests go here. Currently empty.
+├── pubspec.yaml              ← Project manifest: dependencies, assets, fonts. MAINTAINER ONLY.
+├── pubspec.lock              ← Auto-generated lock file. Never edit manually.
+│
+├── .github/                  ← GitHub-specific config. MAINTAINER ONLY.
+│   ├── CODEOWNERS            ← Defines who must review changes to critical files.
+│   ├── pull_request_template.md  ← Pre-fills the PR form for contributors.
+│   └── ISSUE_TEMPLATE/
+│       ├── feature_request.yml
+│       ├── bug_report.yml
+│       └── docs_improvement.yml
+│
+├── README.md                 ← Project overview and getting started guide.
+├── ARCHITECTURE.md           ← This file.
+├── CONTRIBUTING.md           ← How to contribute, branch rules, PR checklist.
+├── SECURITY.md               ← Security guidelines for contributors.
+│
+└── lib/                      ← All Dart/Flutter source code lives here.
+    ├── main.dart             ← Entry point. Sets up ProviderScope. Nothing else.
+    ├── app.dart              ← MaterialApp.router: wires theme, router, Riverpod.
+    │
+    ├── core/                 ← Shared infrastructure. Used by ALL features.
+    │   ├── routing/
+    │   │   └── app_router.dart       ← All GoRouter route definitions.
+    │   ├── theme/
+    │   │   └── app_theme.dart        ← Light and dark ThemeData.
+    │   ├── error/
+    │   │   └── failures.dart         ← Shared error/failure types (ServerFailure, etc).
+    │   └── utils/
+    │       └── constants.dart        ← Global constants: API base URL, app name, etc.
+    │
+    └── features/             ← One folder per major feature of the app.
+        ├── events/           ← PRIMARY feature. Start here as a contributor.
+        │   ├── presentation/
+        │   │   ├── pages/
+        │   │   │   └── events_list_page.dart
+        │   │   ├── widgets/
+        │   │   │   └── event_card.dart
+        │   │   └── controllers/
+        │   │       └── events_controller.dart
+        │   ├── domain/
+        │   │   ├── entities/
+        │   │   │   └── event.dart
+        │   │   ├── usecases/
+        │   │   │   └── get_events.dart
+        │   │   └── repositories/
+        │   │       └── events_repository.dart
+        │   └── data/
+        │       ├── datasources/
+        │       │   └── events_local_datasource.dart
+        │       ├── models/
+        │       │   └── event_model.dart
+        │       └── repositories/
+        │           └── events_repository_impl.dart
+        │
+        ├── auth/             ← Authentication feature. Stubs only for now.
+        │   └── presentation/
+        │       └── pages/
+        │           └── login_page.dart
+        │
+        └── profile/          ← User profile feature. Stubs only for now.
+            └── presentation/
+                └── pages/
+                    └── profile_page.dart
 ```
 
 ---
 
-## Why Three Layers Per Feature — The Intuition
+## Why Three Layers Per Feature?
 
-I want you to picture a hospital instead of a folder tree.
+Every feature (events, auth, profile) has the same three sub-folders:
+**presentation**, **domain**, and **data**. This is not arbitrary — each layer has a
+strict rule about what it can and cannot import.
 
 ```
-presentation/  ->  Reception desk. Talks to patients (users). Knows nothing about medicine.
-domain/        ->  The doctors. They make decisions and give orders. Don't touch equipment.
-data/          ->  The lab and pharmacy. Does the actual physical work. Doesn't talk to patients.
+┌─────────────────────────────┐
+│        presentation         │  ← Talks to: domain only
+│  (UI, widgets, controllers) │
+└──────────────┬──────────────┘
+               │ calls use cases
+┌──────────────▼──────────────┐
+│           domain            │  ← Talks to: nobody (pure Dart)
+│  (entities, usecases, repo  │
+│       interfaces)           │
+└──────────────┬──────────────┘
+               │ implemented by
+┌──────────────▼──────────────┐
+│            data             │  ← Talks to: domain (implements interfaces)
+│  (API, local storage, DTOs, │
+│   repo implementations)     │
+└─────────────────────────────┘
 ```
 
-Reception never walks into the lab and grabs a sample themselves. They tell a doctor what the patient needs. The doctor decides what test is needed and orders it. The lab does the test and returns results to the doctor, who explains it to reception, who explains it to the patient.
+Data flows **downward only**. `presentation` calls `domain`. `data` implements `domain`.
+`domain` never imports from `presentation` or `data` — this is the most important rule.
 
-That's the entire architecture. If you remember this metaphor, you will always know where new code belongs.
-
-```mermaid
-flowchart TD
-    A["Reception - presentation/\nWidgets, pages, controllers"] -->|asks for something| B["Doctors - domain/\nEntities, usecases, repo interfaces"]
-    B -->|gives orders to| C["Lab - data/\nAPI calls, local storage, DTOs"]
-    C -->|sends results back| B
-    B -->|explains to| A
-
-    style A fill:#4285F4,color:#fff
-    style B fill:#34A853,color:#fff
-    style C fill:#EA4335,color:#fff
-```
-
-**The golden rule: arrows only point downward.** `presentation` calls `domain`. `data` implements `domain`. `domain` never imports from `presentation` or `data` — ever. This is the one rule that, if broken, unravels the entire benefit of this architecture.
-
-Why does this matter practically? If you want to swap your mock data for a real API tomorrow, you only touch `data/`. Nobody upstream even notices the change happened.
+The benefit: if you want to replace the mock data source with a real API, you only change
+`data/`. The `domain/` and `presentation/` layers do not care and do not change.
 
 ---
 
-## Data Flow — A Complete Real Example
+## Layer 1 — `presentation/`
 
-Here is exactly what happens, step by step, when `EventsListPage` loads and shows events on screen. I want you to trace this with your finger on the actual files while reading it.
+**Why is it called "presentation"?**
+Because this layer is responsible for *presenting* information to the user and *handling*
+user input. It is everything the user can see and interact with.
 
-```
-1. EventsListPage (presentation/pages/)
-   watches eventsControllerProvider via ref.watch()
-
-2. EventsNotifier (presentation/controllers/)
-   on init, calls the GetEvents use case
-
-3. GetEvents (domain/usecases/)
-   calls EventsRepository.getEvents() -- an interface, not a real class
-
-4. EventsRepository (domain/repositories/)
-   is abstract -- the notifier does not know or care what implements it
-
-5. EventsRepositoryImpl (data/repositories/)
-   implements EventsRepository
-   calls EventsLocalDataSource.getEvents()
-
-6. EventsLocalDataSource (data/datasources/)
-   returns a List<EventModel> -- raw data with JSON knowledge
-
-7. EventsRepositoryImpl
-   returns the list upward as List<Event> -- the pure entity, not the model
-
-8. GetEvents returns List<Event> to EventsNotifier
-
-9. EventsNotifier updates state -> EventsState(events: [...], isLoading: false)
-
-10. EventsListPage rebuilds automatically via ref.watch() and renders EventCards
-```
-
-Notice something important: `presentation` never sees `EventModel` or `EventsLocalDataSource`. It only ever knows about `Event` (the clean entity) and `GetEvents` (the use case). The data layer is completely invisible from the UI's perspective. That invisibility is the entire point.
-
----
-
-## Layer 1 — presentation/
-
-This layer's only job is showing things to the user and reacting to taps. If you find yourself writing an `http.get()` call inside a widget, stop — that code belongs three folders away in `data/`.
+**What goes inside it:**
 
 ```
 presentation/
-  pages/        Full screens. One file per screen. Maps to a GoRouter route.
-  widgets/      Reusable UI pieces smaller than a full screen.
-  controllers/  Riverpod Notifiers. Bridge between UI and domain.
+├── pages/        ← Full screens. One file per screen.
+├── widgets/      ← Reusable UI pieces used by pages. Smaller than a full screen.
+└── controllers/  ← State management. Riverpod Notifiers or BLoC Cubits.
 ```
 
-Rules for `pages/`: a page is mostly layout and composition. It reads state via `ref.watch(...)`. It should never make direct API calls.
+### `pages/`
 
-Rules for `widgets/`: receive data through constructor parameters only. Never fetch their own data. Keep them small and single-purpose.
+A **page** is a full screen that maps to a GoRouter route. When you navigate somewhere
+in the app, you land on a page. Pages are `ConsumerWidget` (Riverpod) or `StatelessWidget`.
 
-Rules for `controllers/`: call use cases from `domain/usecases/`. Expose state (loading, data, error). Never import directly from `data/` — only from `domain/`.
+Rules for pages:
+- A page should be mostly layout and composition — arranging widgets on screen.
+- A page reads state from a controller via `ref.watch(...)`.
+- A page should NOT make direct API calls or contain business logic.
+- One file = one screen.
+
+### `widgets/`
+
+A **widget** is a reusable UI component used by one or more pages. Examples: a card that
+displays one event, a loading spinner, a category chip. If you find yourself copy-pasting
+the same widget code across two pages, extract it into `widgets/`.
+
+Rules for widgets:
+- Widgets receive data via constructor parameters — they do not fetch their own data.
+- Keep widgets small and focused on one responsibility.
+- A widget should never directly call a use case or repository.
+
+### `controllers/`
+
+A **controller** (Riverpod `StateNotifier` or `Notifier`) is the bridge between the UI
+and the domain layer. It holds and manages the state for a page or feature.
+
+Rules for controllers:
+- Controllers call use cases from `domain/usecases/`.
+- Controllers expose state (loading, data, error) that pages read via `ref.watch(...)`.
+- Controllers never import directly from `data/` — they only know about `domain/`.
+- One controller per major page or feature section.
+
+**Why three sub-folders instead of putting everything in one `presentation/` folder?**
+Because as the app grows, a single folder with 20+ files becomes impossible to navigate.
+Separating pages, widgets, and controllers means a new contributor can open `pages/` and
+immediately see all the screens, without scrolling past dozens of unrelated widget files.
 
 ---
 
-## Layer 2 — domain/
+## Layer 2 — `domain/`
 
-This is the heart of the feature — pure Dart, zero Flutter imports, zero HTTP, zero database code. If you can imagine running this code in a command-line Dart script with no Flutter installed, it belongs here.
+The domain layer is the heart of the feature. It contains the business rules and data
+models in **pure Dart** — no Flutter imports, no HTTP clients, no databases.
 
 ```
 domain/
-  entities/      Core data models. Plain Dart classes. No JSON, no annotations.
-  usecases/      One class per operation the app can perform. Single call() method.
-  repositories/  Abstract interfaces -- WHAT is possible, not HOW it's done.
+├── entities/      ← The core data models of this feature.
+├── usecases/      ← One file per operation the app can perform.
+└── repositories/  ← Interfaces (abstract classes) that define what data operations exist.
 ```
 
-Why keep `domain/` framework-agnostic? Because business rules shouldn't care if you're running on Flutter, a server, or a CLI tool. That purity is what makes this layer trivially testable.
+### `entities/`
+
+An **entity** is the core data model for a feature. For events, it is the `Event` class.
+Entities are plain Dart classes — no JSON serialization, no database annotations, no
+Flutter imports. They represent the concept in its purest form.
+
+Example: `Event` has an `id`, `title`, `description`, `date`, `location`, and `category`.
+That is all. How that event is fetched from an API or stored locally is not the entity's
+concern.
+
+### `usecases/`
+
+A **use case** represents one specific thing the app can do. `GetEvents` fetches all
+events. `SearchEvents` searches events by keyword. `GetEventById` fetches a single event.
+
+Each use case is a small class with a single `call()` method. This makes it easy to test,
+easy to read, and easy to swap out.
+
+Why not just call the repository directly from the controller? You can, for simple cases.
+But use cases let you add business logic (filtering, sorting, validation) in one place
+without scattering it across controllers.
+
+### `repositories/`
+
+A **repository interface** (abstract class in Dart) defines *what operations are
+possible* without saying *how* they are implemented. `EventsRepository` declares
+`getEvents()`, `getEventById()`, and `getEventsByCategory()` as abstract methods.
+
+The actual implementation lives in `data/repositories/`. This separation is the key to
+testability — in tests you can swap in a fake implementation without touching any
+production code.
+
+**Why does `domain/` have no Flutter imports?**
+Because it should be possible to take the domain layer and use it in a command-line Dart
+app, a server-side Dart app, or a Flutter app — with zero changes. It is framework-agnostic
+by design.
 
 ---
 
-## Layer 3 — data/
+## Layer 3 — `data/`
 
-This is where the app actually touches the outside world.
+The data layer is where the app actually talks to the outside world — APIs, local storage,
+databases. It implements the interfaces defined in `domain/`.
 
 ```
 data/
-  datasources/   Classes that fetch raw data (HTTP, local DB, mock data).
-  models/        DTOs -- entities plus JSON serialization (fromJson/toJson).
-  repositories/  Concrete classes implementing the domain interfaces.
+├── datasources/   ← Classes that fetch raw data (HTTP, local DB, mock).
+├── models/        ← DTOs: data transfer objects with JSON serialization.
+└── repositories/  ← Concrete implementations of the domain repository interfaces.
 ```
 
-Why not put `fromJson` directly on the entity? Because the entity belongs to `domain/`, which must stay pure. JSON parsing is a data concern, not a business concern. If the API changes field names tomorrow, you edit the model — the entity and every business rule built on it stay untouched.
+### `datasources/`
+
+A **data source** is a class responsible for one specific source of data. Examples:
+`EventsLocalDataSource` (returns mock/hardcoded data), `EventsRemoteDataSource` (calls
+a REST API using Dio).
+
+A repository can have multiple data sources — one local, one remote — and decide which
+to use based on connectivity or caching rules.
+
+### `models/`
+
+A **model** (also called DTO — Data Transfer Object) extends an entity and adds JSON
+serialization. `EventModel` extends `Event` and adds `fromJson()` and `toJson()` methods.
+
+Why not add `fromJson` to the entity itself? Because the entity belongs to `domain/` which
+must stay pure Dart and framework-agnostic. JSON parsing is a data concern, not a business
+concern. Keeping them separate means if the API changes its field names, you only update
+the model — not the entity or any business logic.
+
+### `repositories/`
+
+The **repository implementation** is the concrete class that implements the abstract
+interface from `domain/repositories/`. `EventsRepositoryImpl` implements
+`EventsRepository` by calling a data source and returning entities.
 
 ---
 
-## Common Mistakes I Want You to Avoid
+## Why Three Features (`events/`, `auth/`, `profile/`)?
 
-I am listing these because I have made every single one of them at some point. Learning to spot these early will save you hours of confused debugging.
+Each major capability of the app gets its own feature folder. This means:
 
-| Wrong | Right | Why it matters |
-|---|---|---|
-| `Dio().get(url)` inside a widget | Call Dio inside a class in `data/datasources/` | Widgets should never know HTTP exists |
-| `json.decode(response)` inside an entity | Parse JSON inside a `model` class in `data/` | Entities must stay pure Dart, framework-agnostic |
-| `EventsRepositoryImpl()` created directly inside a widget | Wire it through a Riverpod provider | Widgets should read state, never construct dependencies |
-| `ref.watch(...)` inside an `onPressed` callback | Use `ref.read(...)` inside callbacks | `watch` triggers rebuilds; using it in a callback causes errors |
-| Navigating to a route that doesn't exist in `app_router.dart` | Add the route there first | GoRouter is the single source of truth for navigation |
-| Business logic living inside a `StatelessWidget` | Move it into a `Notifier` in `controllers/` | UI should display state, never own it |
+- A contributor working on events never needs to open the auth folder.
+- Two contributors can work on different features simultaneously without merge conflicts.
+- If a feature is removed from the app, its entire folder is deleted — no surgery required.
+
+`auth/` and `profile/` currently contain only `presentation/pages/` stubs. Their
+`domain/` and `data/` layers are intentionally left as issues for contributors to implement.
 
 ---
 
-## Folder Ownership — Blast Radius Table
+## `core/` — Shared Infrastructure
 
-Before you edit a file, ask yourself: "if I get this wrong, how far does the damage spread?" This table is my honest answer to that question, feature by feature.
+`core/` is not a feature — it is shared infrastructure used by all features.
 
-| File / Folder | Risk Level | Blast Radius If Changed Wrong |
-|---|---|---|
-| `presentation/widgets/` | Low | Only that one component looks wrong |
-| `presentation/pages/` | Low | Only that one screen breaks |
-| `presentation/controllers/` | Medium | Everything the page displays goes stale or wrong |
-| `domain/usecases/` | Medium | One operation across the whole feature misbehaves |
-| `domain/repositories/` (interface) | High | Every implementation of it must update too, or the app won't compile |
-| `domain/entities/` | High | Breaks models, use cases, and anything referencing that entity |
-| `data/repositories/` | Medium | Only affects where data comes from — domain and UI stay safe |
-| `core/routing/app_router.dart` | High | Breaks navigation across the entire app |
-| `core/theme/app_theme.dart` | Medium | Changes the visual look of the whole app |
-| `core/di/service_locator.dart` | High | If a dependency isn't registered, the app crashes on startup |
-| `pubspec.yaml` | High | One typo here and the app won't even build |
+| File | Purpose |
+|---|---|
+| `core/routing/app_router.dart` | All GoRouter routes. Adding a new screen = adding a route here. |
+| `core/theme/app_theme.dart` | Light and dark `ThemeData`. Colors, fonts, component themes. |
+| `core/error/failures.dart` | Shared `Failure` types returned from repositories. |
+| `core/utils/constants.dart` | Global constants: API base URL, app name, timeout durations. |
+
+Only maintainers and advanced contributors should modify `core/`. Changes here affect
+every feature simultaneously.
 
 ---
 
-## Where to Start — By Experience Level
+## How Data Flows — A Complete Example
 
-### New to Flutter — stay inside these files first
+Here is what happens when `EventsListPage` loads and displays a list of events:
+
+```
+1. EventsListPage (presentation/pages/)
+   └── reads state from eventsControllerProvider via ref.watch()
+
+2. EventsNotifier (presentation/controllers/)
+   └── on init, calls GetEvents use case
+
+3. GetEvents (domain/usecases/)
+   └── calls EventsRepository.getEvents()
+
+4. EventsRepository (domain/repositories/)
+   └── is an abstract interface — the notifier does not know what implements it
+
+5. EventsRepositoryImpl (data/repositories/)
+   └── implements EventsRepository
+   └── calls EventsLocalDataSource.getEvents()
+
+6. EventsLocalDataSource (data/datasources/)
+   └── returns a List<EventModel>
+
+7. EventsRepositoryImpl
+   └── returns the list upward as List<Event> (entity, not model)
+
+8. GetEvents returns List<Event> to EventsNotifier
+
+9. EventsNotifier updates state to EventsState(events: [...], isLoading: false)
+
+10. EventsListPage rebuilds via ref.watch() and renders EventCard widgets
+```
+
+Notice: `presentation` never sees `EventModel` or `EventsLocalDataSource`. It only knows
+about `Event` (entity) and `GetEvents` (use case). The data layer is completely hidden.
+
+---
+
+## Where to Start (By Experience Level)
+
+### New to Flutter — touch only these files first
 
 - `lib/features/events/presentation/pages/events_list_page.dart`
 - `lib/features/events/presentation/widgets/event_card.dart`
-- Look for issues labeled `good first issue`
+- Look for GitHub issues labelled `good first issue`
 
 ### Comfortable with Flutter — go one layer deeper
 
 - `lib/features/events/presentation/controllers/events_controller.dart`
 - `lib/features/events/domain/usecases/`
-- Look for issues labeled `intermediate`
+- Look for GitHub issues labelled `intermediate`
 
 ### Into architecture and patterns — go all the way
 
-- `lib/features/events/data/` — swap mock for a real API
-- `lib/features/auth/` — implement the full auth feature end-to-end
+- `lib/features/events/data/` — swap mock for real API
+- `lib/features/auth/` — implement full auth feature end-to-end
 - `lib/core/` — improve DI, routing, error handling
-- Look for issues labeled `advanced`
+- Look for GitHub issues labelled `advanced`
 
 ---
 
@@ -259,7 +370,7 @@ Before you edit a file, ask yourself: "if I get this wrong, how far does the dam
 | `domain/` has zero Flutter imports | Keeps business logic framework-agnostic and testable |
 | `presentation/` never imports from `data/` | Enforces one-way dependency flow |
 | One page = one file in `pages/` | Easy to find, easy to navigate |
-| Widgets receive data via constructor, never fetch it themselves | Keeps widgets reusable and stateless |
+| Widgets receive data via constructor, not by fetching it themselves | Keeps widgets reusable and stateless |
 | Controllers only call use cases, never data sources directly | Maintains layer separation |
 | `core/` is maintainer-only | Prevents breaking changes across all features |
-| Entity is never the same as Model (no JSON in entities) | Separates business concepts from transport concerns |
+| Entity ≠ Model (no JSON in entities) | Separates business concepts from transport concerns |
