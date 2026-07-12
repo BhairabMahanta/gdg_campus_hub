@@ -49,7 +49,10 @@ feature/*   → temporary work branches
   - `feature/login-form-ui`
   - `docs/improve-architecture-guide`
   - `bugfix/router-path-fix`
+  
+### Why this process exists
 
+This protects the public branch from accidental mistakes, and lets multiple people work at once without constantly breaking what's shown publicly on `main`.
 ---
 
 ## Contribution Flow
@@ -64,21 +67,74 @@ fork repo → clone fork → checkout dev → create feature branch → code →
 
 ### For maintainers
 
-Use this workflow:
-
-```text
-feature/* → PR to dev → review/merge → later PR from dev → main
 ```
-
-### Why this process exists
-
-This process protects the public branch from accidental mistakes.
-It also allows multiple contributors to work at the same time without constantly breaking
-what is shown publicly in `main`.
+feature/* -> PR to dev -> review/merge -> later PR from dev -> main
+```
 
 ---
 
-## Step-by-Step Git Workflow
+## Your First PR — Complete Walkthrough
+
+I'm walking you through Issue #1 (EventCard tap highlight) start to finish. Do this exactly, once, so the workflow becomes muscle memory.
+
+### Step 1 — Fork and clone
+
+Click Fork on GitHub, then:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/gdg_campus_hub.git
+cd gdg_campus_hub
+git remote add upstream https://github.com/BhairabMahanta/gdg_campus_hub.git
+```
+
+### Step 2 — Get the latest dev branch
+
+```bash
+git checkout dev
+git pull upstream dev
+```
+
+### Step 3 — Create your feature branch
+
+```bash
+git checkout -b feature/eventcard-tap-highlight
+```
+
+### Step 4 — Make the change
+
+Open `lib/features/events/presentation/widgets/event_card.dart`.
+Add `clipBehavior: Clip.antiAlias` to the `Card` widget.
+Wrap the inner `Padding` with an `InkWell(onTap: () {})`.
+
+### Step 5 — Check your work
+
+```bash
+flutter analyze
+flutter run
+```
+
+Tap a card. You should see a ripple effect.
+
+### Step 6 — Commit
+
+```bash
+git add lib/features/events/presentation/widgets/event_card.dart
+git commit -m "feat: add InkWell tap highlight to EventCard"
+```
+
+### Step 7 — Push and open a PR
+
+```bash
+git push -u origin feature/eventcard-tap-highlight
+```
+
+Go to GitHub, your fork, Compare & pull request. Set the base branch to `dev`, not `main`. Write one sentence about what changed and why.
+
+That's it. Wait for review, respond to feedback, and merge.
+
+---
+
+## Step-by-Step Git Workflow (General)
 
 ### 1. Get the latest code
 
@@ -113,8 +169,7 @@ flutter analyze
 flutter test
 ```
 
-If no tests exist yet, `flutter test` may do very little, and that is okay.
-But `flutter analyze` must pass.
+If no tests exist yet, `flutter test` may do very little — that's fine. `flutter analyze` must pass with zero errors.
 
 ### 5. Commit your work
 
@@ -204,13 +259,13 @@ Read `ARCHITECTURE.md` for the full explanation. Quick guide:
 
 ### First-time contributor rule
 
-If this is your first contribution, stay inside one of these folders:
+If this is your first contribution, stay inside one of these:
 
 - `lib/features/events/presentation/pages/`
 - `lib/features/events/presentation/widgets/`
-- `docs/` files like `README.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`
+- Docs: `README.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`
 
-Avoid `core/`, `domain/`, and `data/` until you understand the architecture.
+Avoid `core/`, `domain/`, and `data/` until you've read `ARCHITECTURE.md` and understand the layer rules.
 
 ---
 
@@ -254,8 +309,8 @@ Please do **not**:
 
 If you are confused about where code belongs:
 
-1. Read `ARCHITECTURE.md` again.
+1. Read `ARCHITECTURE.md` again — specifically the blast radius table.
 2. Check whether the issue mentions `presentation`, `domain`, or `data`.
 3. Ask in the issue comments before making the change.
 
-It is always better to ask than to place code in the wrong layer.
+It is always better to ask than to place code in the wrong layer. I would rather answer ten questions than review a PR that needs to be rebuilt from scratch.
