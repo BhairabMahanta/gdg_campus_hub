@@ -130,6 +130,7 @@ If your issue starts needing something from the "NOT building" list, stop, comme
 - Call your `write` method right after a successful login, and your `delete` method on logout — think through the whole lifecycle, not just the write.
 
 ---
+ISSUE 11- issue 15 doesnt Exist on the repository!! If you've reached this place, congratulations! you can create this as your own issues and you will also learn how to create a gihub issue! and you can comment and tag me to assign you the issue!
 
 ## Issue #11 — Add a search bar to EventsListPage
 `good first issue`
