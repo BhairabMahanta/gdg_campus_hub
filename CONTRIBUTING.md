@@ -1,61 +1,68 @@
 # Contributing to GDG Campus Hub
 
-Welcome. I built this repository as a Flutter learning project first, and an app second. That means every contribution should help you (or someone else) understand Flutter structure, state management, routing, architecture, and real team workflow — not just add a random feature and move on.
-
-I want you to leave this project a better Flutter developer than when you found it. Here's how.
+Welcome. This repository is designed as a **Flutter learning project first** and an app second.
+That means contributions should help people understand Flutter structure, state management,
+routing, architecture, and collaboration workflow — not just add random features.
 
 ---
 
-## Before You Start Anything
+## Before You Start
+
+Before writing any code:
 
 1. Read `README.md` for project setup.
-2. Read `ARCHITECTURE.md` to understand where code belongs — this is not optional, most beginner mistakes come from skipping this.
+2. Read `ARCHITECTURE.md` to understand where code belongs.
 3. Check open issues and pick one that matches your skill level.
-4. Comment on the issue before starting, so two people don't accidentally build the same thing.
+4. Comment on the issue before starting, so work is not duplicated.
 
 ---
 
 ## Branch Strategy
 
-This project uses three levels of branches:
+This project uses **three levels of branches**:
 
-```
-main        -> stable/public branch
-dev         -> active development branch
-feature/*   -> temporary work branches
-```
-
-### main
-
-This is the stable public branch. Only reviewed, cleaned, ready code reaches here. Contributors should never open pull requests directly to `main` — it is protected for safety.
-
-### dev
-
-This is the working branch. Most pull requests target `dev`. New features, fixes, and doc updates get merged here first. Once `dev` is stable, I create a PR from `dev` into `main`.
-
-### feature/*
-
-Temporary branches for one task at a time. Every contributor, including me, works in a feature branch. Examples:
-
-```
-feature/events-filter-chip
-feature/login-form-ui
-docs/improve-architecture-guide
-bugfix/router-path-fix
+```text
+main        → stable/public branch
+dev         → active development branch
+feature/*   → temporary work branches
 ```
 
+### What each branch means
+
+#### `main`
+- This is the **stable public branch**.
+- Only reviewed, cleaned, and ready code should reach `main`.
+- Contributors should **not** open pull requests directly to `main`.
+- `main` is protected for safety.
+
+#### `dev`
+- This is the **working branch** of the project.
+- Most pull requests should target `dev`.
+- New features, fixes, and docs updates are merged here first.
+- Once `dev` is stable, maintainers create a pull request from `dev` to `main`.
+
+#### `feature/*`
+- These are temporary branches created for one task at a time.
+- Every contributor, including maintainers, should work in a feature branch.
+- Examples:
+  - `feature/events-filter-chip`
+  - `feature/login-form-ui`
+  - `docs/improve-architecture-guide`
+  - `bugfix/router-path-fix`
+  
 ### Why this process exists
 
 This protects the public branch from accidental mistakes, and lets multiple people work at once without constantly breaking what's shown publicly on `main`.
-
 ---
 
 ## Contribution Flow
 
 ### For contributors
 
-```
-fork repo -> clone fork -> checkout dev -> create feature branch -> code -> push -> PR to dev
+Use this workflow:
+
+```text
+fork repo → clone fork → checkout dev → create feature branch → code → push → PR to dev
 ```
 
 ### For maintainers
@@ -142,9 +149,18 @@ git pull origin dev
 git checkout -b feature/short-description
 ```
 
+Examples:
+
+```bash
+git checkout -b feature/events-category-filter
+git checkout -b bugfix/login-validation
+git checkout -b docs/update-contributing-guide
+```
+
 ### 3. Make your changes
 
-Keep changes focused on one task. Don't mix unrelated fixes into one PR.
+Keep your changes focused on one task only.
+Do not mix unrelated fixes into one pull request.
 
 ### 4. Run checks before committing
 
@@ -170,7 +186,10 @@ git push -u origin feature/short-description
 
 ### 7. Open a pull request
 
-Base branch: `dev`. Compare branch: your feature branch. Never target `main` unless I explicitly tell you to.
+- **Base branch:** `dev`
+- **Compare branch:** your feature branch
+
+Do **not** target `main` unless a maintainer explicitly tells you to.
 
 ---
 
@@ -185,20 +204,55 @@ Every pull request should:
 - pass `flutter analyze`
 - avoid committing secrets, tokens, or `.env` files
 
-If your PR changes multiple layers (`presentation`, `domain`, `data`), explain why in the description.
+If your pull request changes multiple layers (`presentation`, `domain`, `data`), explain why.
 
 ---
 
-## Folder Rules — Quick Reference
+## Maintainer Release Flow
 
-Read `ARCHITECTURE.md` for the full reasoning behind these. Quick guide:
+Maintainers should periodically move stable work from `dev` into `main`.
+
+That flow is:
+
+```text
+dev → PR to main → review → merge
+```
+
+Use this when:
+- a feature is complete
+- major bugs are fixed
+- docs are clean
+- the branch is safe for public viewing
+
+This keeps `main` polished and `dev` flexible.
+
+---
+
+## Protected Branches and Why They Exist
+
+This repository uses branch protection rules.
+That means:
+
+- direct pushes to important branches may be blocked
+- pull requests may be required before merging
+- reviews may be required
+- maintainers may still choose to follow the same workflow for consistency
+
+These rules are not there to make development annoying.
+They exist to prevent accidental merges, broken code, and unsafe changes.
+
+---
+
+## Folder Rules
+
+Read `ARCHITECTURE.md` for the full explanation. Quick guide:
 
 | Folder | What belongs here | Who should touch it |
 |---|---|---|
-| `lib/core/` | Shared infrastructure: routing, theme, DI, constants | Maintainers / advanced contributors |
+| `lib/core/` | Shared infrastructure like routing, theme, constants | Maintainers / advanced contributors |
 | `features/*/presentation/pages/` | Full app screens | Beginners welcome |
 | `features/*/presentation/widgets/` | Reusable UI components | Beginners welcome |
-| `features/*/presentation/controllers/` | Riverpod state management | Intermediate |
+| `features/*/presentation/controllers/` | Riverpod/BLoC state management | Intermediate |
 | `features/*/domain/` | Entities, use cases, repository interfaces | Intermediate / advanced |
 | `features/*/data/` | API/local storage/models/repository implementations | Intermediate / advanced |
 | `.github/` | Templates and repo automation config | Maintainers only |
@@ -219,16 +273,16 @@ Avoid `core/`, `domain/`, and `data/` until you've read `ARCHITECTURE.md` and un
 
 Use conventional commit prefixes:
 
-- `feat:` a new feature
-- `fix:` a bug fix
-- `docs:` documentation only
-- `refactor:` code cleanup with no behavior change
-- `chore:` config/tooling/setup work
-- `style:` formatting or UI polish with no logic change
+- `feat:` for a new feature
+- `fix:` for a bug fix
+- `docs:` for documentation only
+- `refactor:` for code cleanup without behavior change
+- `chore:` for config/tooling/setup work
+- `style:` for formatting or UI polish without logic change
 
 Examples:
 
-```
+```text
 feat: add event category filter
 fix: correct login form validation message
 docs: expand architecture guide for new contributors
@@ -239,7 +293,7 @@ chore: add issue templates and codeowners
 
 ## What Not To Do
 
-Please do not:
+Please do **not**:
 
 - open PRs directly to `main`
 - mix unrelated changes in one PR
